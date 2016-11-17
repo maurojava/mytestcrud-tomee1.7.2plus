@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:dialog id="OrderEditDlg" widgetVar="OrderEditDialog" modal="true" resizable="false"  appendTo="@(body)" header="#{myBundle.EditOrderTitle}" closeOnEscape="true">
+
+            <h:form id="OrderEditForm">
+
+                <h:panelGroup id="display">
+                    <p:panelGrid  columns="2" columnClasses="column" rendered="#{orderController.selected != null}">
+
+
+                        <h:outputLabel value="#{myBundle.EditOrderLabel_id}" for="id" />
+                        <h:outputText id="id" value="#{orderController.selected.id}" />
+
+                        <p:outputLabel value="#{myBundle.EditOrderLabel_nameproduct}" for="nameproduct" />
+                        <p:inputText id="nameproduct" value="#{orderController.selected.nameproduct}" title="#{myBundle.EditOrderTitle_nameproduct}"/>
+
+                        <p:outputLabel value="#{myBundle.EditOrderLabel_quantity}" for="quantity" />
+                        <p:inputText id="quantity" value="#{orderController.selected.quantity}" title="#{myBundle.EditOrderTitle_quantity}"/>
+
+                        <p:outputLabel value="#{myBundle.EditOrderLabel_customer}" for="customer" />
+                        <p:selectOneMenu id="customer" value="#{orderController.selected.customer}" >
+                            <f:selectItem itemLabel="#{myBundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{customerController.items}"
+                                           var="customerItem"
+                                           itemValue="#{customerItem}"
+                                           itemLabel="#{customerItem.name.toString()}"
+                                           />
+                            <f:converter binding="#{customerConverter}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{orderController.save}" value="#{myBundle.Save}" update="display,:OrderListForm:datalist,:growl" oncomplete="handleSubmit(xhr,status,args,PF('OrderEditDialog'));">
+                        <p:confirm header="#{myBundle.ConfirmationHeader}" message="#{myBundle.ConfirmEditMessage}" icon="ui-icon-alert"/>
+                    </p:commandButton>
+                    <p:commandButton value="#{myBundle.Cancel}" oncomplete="PF('OrderEditDialog').hide()" update="display" process="@this" immediate="true" resetValues="true"/>
+                </h:panelGroup>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+
+</html>

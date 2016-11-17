@@ -4,42 +4,64 @@
  * and open the template in the editor.
  */
 package mauro.test;
-
+import java.util.Properties;
+import junit.framework.TestCase;
+import javax.ejb.embeddable.EJBContainer;
+import javax.inject.Inject;
+import javax.naming.NamingException;
+import mauro.ejbs.CustomerFacade;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author mauronew
  */
-public class NewEmptyJUnitTest {
+public class NewEmptyJUnitTest extends TestCase{
+
     
+    
+@Inject
+private CustomerFacade custFacade; 
+    
+    private static EJBContainer container;
+
     public NewEmptyJUnitTest() {
     }
-    
+
     @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
+    public static void start() {
+        Properties p = new Properties();
+        
+        // create some resources
+p.put("dbfortest", "new://Resource?type=DataSource");
+p.put("dbfortest.JdbcDriver", "org.hsqldb.jdbcDriver");
+p.put("dbfortest.JdbcUrl", "jdbc:hsqldb:mem:testdb");
+p.put("dbfortest.JtaManaged", "true");
+        container = EJBContainer.createEJBContainer(p);
+
     }
 
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
+    @AfterClass
+    public static void tearDownClass() {
+      container.close();}
+
+    @Before
+    public void inject() throws NamingException {
+        container.getContext().bind("inject", this);
+    }
+
+    @After
+    public static void stop() {
+        
+    }
+
+    
+    @Test
+     public void hello() {
+     assertNotNull(custFacade);
+     }
 }
