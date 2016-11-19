@@ -3,6 +3,7 @@
   <persistence-unit name="mytestcrud-tomee1.7.2plusPU" transaction-type="JTA">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <jta-data-source>jdbc/dbtest</jta-data-source>
+    
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)"/>

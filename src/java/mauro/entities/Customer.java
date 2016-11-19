@@ -6,7 +6,7 @@
 package mauro.entities;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,8 +24,10 @@ public class Customer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+   
+    
     @OneToMany(mappedBy = "customer")
-    private List<Order> orders;
+private Collection<Order> orders;
 
     public Long getId() {
         return id;
@@ -74,6 +76,14 @@ private String name;
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Collection<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Collection<Order> orders) {
+        this.orders = orders;
     }
     
 }
