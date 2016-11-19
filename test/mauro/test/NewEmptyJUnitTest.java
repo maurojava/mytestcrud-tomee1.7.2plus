@@ -37,10 +37,10 @@ private CustomerFacade custFacade;
         Properties p = new Properties();
         
         // create some resources
-p.put("dbfortest", "new://Resource?type=DataSource");
-p.put("dbfortest.JdbcDriver", "org.hsqldb.jdbcDriver");
-p.put("dbfortest.JdbcUrl", "jdbc:hsqldb:mem:testdb");
-p.put("dbfortest.JtaManaged", "true");
+p.put("ildatabase", "new://Resource?type=DataSource");
+p.put("ildatabase.JdbcDriver", "org.hsqldb.jdbcDriver");
+p.put("ildatabase.JdbcUrl", "jdbc:hsqldb:mem:testdb");
+p.put("ildatabase.JtaManaged", "true");
         container = EJBContainer.createEJBContainer(p);
 
     }
