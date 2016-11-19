@@ -7,7 +7,13 @@ package mauro.ejbs;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.embeddable.EJBContainer;
+import javax.inject.Inject;
+import javax.naming.Context;
+import javax.naming.NamingException;
 import mauro.entities.Customer;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -21,25 +27,43 @@ import static org.junit.Assert.*;
  * @author mauronew
  */
 public class CustomerFacadeTest {
-    
+      private static EJBContainer container;
+    private static Context context;
+    @Inject
+     CustomerFacade instance ;
     public CustomerFacadeTest() {
     }
     
     @BeforeClass
     public static void setUpClass() {
-    }
+    Properties p = new Properties();
+
+        // create some resources
+        p.put("ildatabase", "new://Resource?type=DataSource");
+        p.put("ildatabase.JdbcDriver", "org.hsqldb.jdbcDriver");
+        p.put("ildatabase.JdbcUrl", "jdbc:hsqldb:mem:testdb");
+        p.put("ildatabase.JtaManaged", "true");
+     
+        container = EJBContainer.createEJBContainer(p);
     
+    }
+   
     @AfterClass
     public static void tearDownClass() {
-    }
+   container.close();  }
     
     @Before
     public void setUp() {
+          try {
+              context.bind("inject",this) ;
+          } catch (NamingException ex) {
+              Logger.getLogger(CustomerFacadeTest.class.getName()).log(Level.SEVERE, null, ex);
+          }
     }
     
     @After
     public void tearDown() {
-    }
+   }
 
     /**
      * Test of create method, of class CustomerFacade.
@@ -47,13 +71,12 @@ public class CustomerFacadeTest {
     @Test
     public void testCreate() throws Exception {
         System.out.println("create");
-        Customer entity = null;
-        EJBContainer container = javax.ejb.embeddable.EJBContainer.createEJBContainer();
-        CustomerFacade instance = (CustomerFacade)container.getContext().lookup("java:global/classes/CustomerFacade");
-        instance.create(entity);
-        container.close();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Customer customer  = new Customer("pippo");
+           instance.create(customer) ;
+     int numercustomer=  instance.count();
+        assertTrue(numercustomer!=0);
+      
+       
     }
 
     /**
@@ -63,10 +86,8 @@ public class CustomerFacadeTest {
     public void testEdit() throws Exception {
         System.out.println("edit");
         Customer entity = null;
-        EJBContainer container = javax.ejb.embeddable.EJBContainer.createEJBContainer();
-        CustomerFacade instance = (CustomerFacade)container.getContext().lookup("java:global/classes/CustomerFacade");
-        instance.edit(entity);
-        container.close();
+         instance.edit(entity);
+      
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
@@ -77,11 +98,8 @@ public class CustomerFacadeTest {
     @Test
     public void testRemove() throws Exception {
         System.out.println("remove");
-        Customer entity = null;
-        EJBContainer container = javax.ejb.embeddable.EJBContainer.createEJBContainer();
-        CustomerFacade instance = (CustomerFacade)container.getContext().lookup("java:global/classes/CustomerFacade");
         instance.remove(entity);
-        container.close();
+       
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
@@ -93,12 +111,10 @@ public class CustomerFacadeTest {
     public void testFind() throws Exception {
         System.out.println("find");
         Object id = null;
-        EJBContainer container = javax.ejb.embeddable.EJBContainer.createEJBContainer();
-        CustomerFacade instance = (CustomerFacade)container.getContext().lookup("java:global/classes/CustomerFacade");
         Customer expResult = null;
         Customer result = instance.find(id);
         assertEquals(expResult, result);
-        container.close();
+      
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
@@ -109,12 +125,10 @@ public class CustomerFacadeTest {
     @Test
     public void testFindAll() throws Exception {
         System.out.println("findAll");
-        EJBContainer container = javax.ejb.embeddable.EJBContainer.createEJBContainer();
-        CustomerFacade instance = (CustomerFacade)container.getContext().lookup("java:global/classes/CustomerFacade");
         List<Customer> expResult = null;
         List<Customer> result = instance.findAll();
         assertEquals(expResult, result);
-        container.close();
+      
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
@@ -126,12 +140,10 @@ public class CustomerFacadeTest {
     public void testFindRange_intArr() throws Exception {
         System.out.println("findRange");
         int[] range = null;
-        EJBContainer container = javax.ejb.embeddable.EJBContainer.createEJBContainer();
-        CustomerFacade instance = (CustomerFacade)container.getContext().lookup("java:global/classes/CustomerFacade");
-        List<Customer> expResult = null;
+         List<Customer> expResult = null;
         List<Customer> result = instance.findRange(range);
         assertEquals(expResult, result);
-        container.close();
+       
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
@@ -142,12 +154,10 @@ public class CustomerFacadeTest {
     @Test
     public void testCount_0args() throws Exception {
         System.out.println("count");
-        EJBContainer container = javax.ejb.embeddable.EJBContainer.createEJBContainer();
-        CustomerFacade instance = (CustomerFacade)container.getContext().lookup("java:global/classes/CustomerFacade");
-        int expResult = 0;
+         int expResult = 0;
         int result = instance.count();
         assertEquals(expResult, result);
-        container.close();
+      
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
@@ -163,12 +173,10 @@ public class CustomerFacadeTest {
         String sortField = "";
         String sortOrder = "";
         Map<String, Object> filters = null;
-        EJBContainer container = javax.ejb.embeddable.EJBContainer.createEJBContainer();
-        CustomerFacade instance = (CustomerFacade)container.getContext().lookup("java:global/classes/CustomerFacade");
-        List<Customer> expResult = null;
+         List<Customer> expResult = null;
         List<Customer> result = instance.findRange(first, pageSize, sortField, sortOrder, filters);
         assertEquals(expResult, result);
-        container.close();
+       
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
@@ -183,12 +191,10 @@ public class CustomerFacadeTest {
         int pageSize = 0;
         Map<String, String> sortFields = null;
         Map<String, Object> filters = null;
-        EJBContainer container = javax.ejb.embeddable.EJBContainer.createEJBContainer();
-        CustomerFacade instance = (CustomerFacade)container.getContext().lookup("java:global/classes/CustomerFacade");
         List<Customer> expResult = null;
         List<Customer> result = instance.findRange(first, pageSize, sortFields, filters);
         assertEquals(expResult, result);
-        container.close();
+      
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
@@ -200,12 +206,10 @@ public class CustomerFacadeTest {
     public void testCount_Map() throws Exception {
         System.out.println("count");
         Map<String, Object> filters = null;
-        EJBContainer container = javax.ejb.embeddable.EJBContainer.createEJBContainer();
-        CustomerFacade instance = (CustomerFacade)container.getContext().lookup("java:global/classes/CustomerFacade");
         int expResult = 0;
         int result = instance.count(filters);
         assertEquals(expResult, result);
-        container.close();
+      
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
